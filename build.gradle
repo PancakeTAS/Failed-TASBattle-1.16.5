@@ -1,0 +1,63 @@
+
+plugins {
+	id 'fabric-loom' version '0.6-SNAPSHOT'
+}
+
+version = project.version
+
+// Use Java 8 you fool
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft}"
+	mappings "net.fabricmc:yarn:${project.yarn}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader}"
+	// modImplementation "net.fabricmc.fabric-api:fabric-api:${project.api}" | Do we really need this?
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+
+	def targetVersion = 8
+	if (JavaVersion.current().isJava9Compatible()) {
+		 it.options.release = targetVersion
+	}
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.modid}"}
+	}
+}
+
+
+
+// Hide tasks
+
+project.getAllTasks(true).each { key, val -> 
+	val.each {
+		it.group = null
+	}	
+}
+
+tasks.getByName("genEclipseRuns").group = "fabric"
+tasks.getByName("eclipse").group = "fabric"
+tasks.getByName("idea").group = "fabric"
+tasks.getByName("genIdeaWorkspace").group = "fabric"
+tasks.getByName("javadoc").group = "fabric"
+tasks.getByName("runClient").group = "fabric"
+tasks.getByName("remapJar").group = "fabric"
+

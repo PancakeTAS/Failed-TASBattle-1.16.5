@@ -1,0 +1,12 @@
+.gradle
+.settings
+.classpath
+.project
+build
+bin
+*.launch
+run
+Private.java
+
+.idea/
+mc

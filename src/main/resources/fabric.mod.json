@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "tasbattle",
+  "version": "${version}",
+  "name": "TAS Battle Client",
+  "description": "This is the mod required to join the Minecraft TAS Battle Server!",
+  "authors": [
+    "Pancake"
+  ],
+  "contact": {
+    "homepage": "https://mgnet.work/",
+    "sources": "https://github.com/MCPfannkuchenYT/TAS-Battle-1.16.5"
+  },
+  "license": "GPLv3",
+  "icon": "assets/tasbattle/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.pfannekuchen.tasbattle.TASBattleClient"
+    ]
+  },
+  "mixins": [
+    "tasbattle.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

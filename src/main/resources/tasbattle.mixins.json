@@ -6,6 +6,9 @@
   "mixins": [
   ],
   "client": [
+  	"LaunchArgsMixin",
+  	"MinecraftClientMixin",
+  	"accessor.TimerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

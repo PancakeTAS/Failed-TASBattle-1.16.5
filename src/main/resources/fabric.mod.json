@@ -15,7 +15,7 @@
   "icon": "assets/tasbattle/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
+    "client": [
       "de.pfannekuchen.tasbattle.TASBattleClient"
     ]
   },

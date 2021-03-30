@@ -1,6 +1,9 @@
 package de.pfannekuchen.tasbattle;
 
-import java.net.InetAddress;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import net.fabricmc.api.ClientModInitializer;
 
@@ -26,6 +29,18 @@ public final class TASBattleClient implements ClientModInitializer {
 	}
 
 	/** Method to check the Connection to {@link #SERVER} */
-	private final static boolean checkConnection() throws Exception { return SERVER.equals(InetAddress.getByName(SERVER).getHostAddress().toString()); }
+	private static boolean checkConnection() {
+	    try {
+	        final URL url = new URL("http://" + SERVER);
+	        final URLConnection conn = url.openConnection();
+	        conn.connect();
+	        conn.getInputStream().close();
+	        return true;
+	    } catch (MalformedURLException e) {
+	        throw new RuntimeException(e);
+	    } catch (IOException e) {
+	        return false;
+	    }
+	}
 	
 }

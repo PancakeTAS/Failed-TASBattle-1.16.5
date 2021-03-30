@@ -14,6 +14,9 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader}"
 	// modImplementation "net.fabricmc.fabric-api:fabric-api:${project.api}" | Do we really need this?
+	
+	// FFmpeg wrapper, TODO: Remove this and replace by JNI
+	compile group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 }
 
 processResources {

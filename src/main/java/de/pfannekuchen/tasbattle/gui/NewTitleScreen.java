@@ -61,7 +61,7 @@ public class NewTitleScreen extends Screen {
 			if (buttonWidget.isMouseOver(i, j) && !buttonWidget.active) this.renderOrderedTooltip(matrixStack, this.client.textRenderer.wrapLines(new TranslatableText("It looks like we couldn't connect you to the Internet!"), Math.max(this.width / 2 - 43, 170)), i, j);
 		})).active = TASBattleClient.isConnected;
 		addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 48 + 48, 200, 20, new TranslatableText("Speed up Videos"), (buttonWidget) -> {
-			
+			client.openScreen(new VideoUpspeederScreen());
 		}, (buttonWidget, matrixStack, i, j) -> {
 			if (buttonWidget.isMouseOver(i, j)) this.renderOrderedTooltip(matrixStack, this.client.textRenderer.wrapLines(new TranslatableText(OSUtils.IS_WINDOWS ? "The Video Upspeeder is a small Mod that can speed up your Videos without the need of any Editing Software! \u00A74Download might trigger Anti-Virus" : "This feature is only available for Windows Users"), Math.max(this.width / 2 - 43, 170)), i, j);
 		})).active = OSUtils.IS_WINDOWS;

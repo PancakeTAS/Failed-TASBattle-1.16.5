@@ -44,10 +44,8 @@ public class TASBattleServer {
 			
 			@Override
 			public void onPacket(Packet packet, Socket socket, int id) {
-				System.out.println("In: " + packet.getName()); // TODO: Error is here, getName not working.
-				if (packet.getName() == "LoginPacket") {
+				if (packet.getName().equalsIgnoreCase("LoginPacket")) {
 					TASBattleServer.clients.put(socket, (LoginPacket) packet);
-					System.out.println("Input: LoginPacket");
 					ArrayList<String> pList = new ArrayList<String>();
 					clients.forEach((c, b) -> {
 						pList.add(b.getName() + (b.isOnline ? "" : " [Offline]"));
@@ -55,7 +53,6 @@ public class TASBattleServer {
 					UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList);
 					clients.forEach((c, b) -> {
 						try {
-							System.out.println("why dis nu wok");
 							server.sendPacket(refreshPlayers, c);
 						} catch (IOException e) {
 							e.printStackTrace();

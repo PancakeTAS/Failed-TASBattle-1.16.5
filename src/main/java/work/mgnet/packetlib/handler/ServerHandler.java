@@ -77,7 +77,6 @@ public class ServerHandler {
 												}
 												System.out.println(new SimpleDateFormat("[HH:mm:ss]").format(new Date()) + "[SERVER] " + s.getInetAddress().getHostName() + ": registered");
 											}
-											System.out.println("Server recieves (" + events.size() + "): " + ((Packet) r).getName());
 											for (PacketEvent packetEvent : events) {
 												packetEvent.onPacket((Packet) r, s, size);
 											}
@@ -131,7 +130,6 @@ public class ServerHandler {
 	}
 	
 	public void sendPacket(Packet obj, Socket client) throws IOException { /**Send a Packet*/
-		System.out.println("Outgoing: " + obj.getName());
 		registeredStreams.get(client).writeObject(obj);
 		registeredStreams.get(client).flush();
 		registeredStreams.get(client).reset();

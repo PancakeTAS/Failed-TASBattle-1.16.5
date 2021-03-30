@@ -25,11 +25,11 @@ public class Client {
 		handler.addEvent(new PacketEvent() {
 			@Override
 			public void onPacket(Packet packet, Socket socket, int id) {
-				if (packet.getName() == "HandshakePacket") {
+				if (packet.getName().equalsIgnoreCase("HandshakePacket")) {
 					System.out.println("[Networking] Recieved Handshake Packet from Server.");
 					settings = (HandshakePacket) packet;
 					
-				} else if (packet.getName() == "UpdatePlayersPacket") {
+				} else if (packet.getName().equalsIgnoreCase("UpdatePlayersPacket")) {
 					System.out.println("[Networking] Updating Playerlist");
 					connectedPlayers = ((UpdatePlayersPacket) packet).players;
 				}

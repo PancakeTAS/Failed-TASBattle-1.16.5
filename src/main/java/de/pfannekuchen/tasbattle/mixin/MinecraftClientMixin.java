@@ -12,6 +12,7 @@ import com.mojang.authlib.minecraft.SocialInteractionsService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
 import de.pfannekuchen.tasbattle.gui.NewTitleScreen;
+import de.pfannekuchen.tasbattle.networking.Client;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.screen.Screen;
@@ -26,13 +27,13 @@ public class MinecraftClientMixin {
 
 	/**
 	 * Remove ugly 'Failed to verify authentication' Message, because it is going to show every single time.
+	 * Check connection too and see if the player is online
 	 * @author Pancake
 	 */
 	@Overwrite
 	private SocialInteractionsService method_31382(YggdrasilAuthenticationService yggdrasilAuthenticationService, RunArgs runArgs) {
-		/* Original Code: 
-		 try { return yggdrasilAuthenticationService.createSocialInteractionsService(runArgs.network.session.getAccessToken()); } catch (AuthenticationException var4) {
-		 	LOGGER.error((String) "Failed to verify authentication", (Throwable) var4); return new OfflineSocialInteractions(); } */
+		 try { yggdrasilAuthenticationService.createSocialInteractionsService(runArgs.network.session.getAccessToken()); Client.isOnline = true; } catch (Exception var4) {
+			 Client.isOnline = false; } 
 		return new OfflineSocialInteractions(); // Always return this, because it is always gonna happen.
 	}
 	

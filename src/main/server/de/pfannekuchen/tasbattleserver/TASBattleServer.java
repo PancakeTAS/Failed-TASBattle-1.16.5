@@ -48,7 +48,7 @@ public class TASBattleServer {
 					TASBattleServer.clients.put(socket, (LoginPacket) packet);
 					ArrayList<String> pList = new ArrayList<String>();
 					clients.forEach((c, b) -> {
-						pList.add(b.getName() + (b.isOnline ? "" : " [Offline]"));
+						pList.add(b.username + (b.isOnline ? "" : " [Offline]"));
 					});
 					UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList);
 					clients.forEach((c, b) -> {

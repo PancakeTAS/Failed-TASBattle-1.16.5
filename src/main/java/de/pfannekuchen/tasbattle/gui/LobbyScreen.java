@@ -5,6 +5,7 @@ import java.awt.Color;
 import de.pfannekuchen.tasbattle.networking.Client;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
@@ -12,6 +13,16 @@ public class LobbyScreen extends Screen {
 
 	public LobbyScreen() {
 		super(LiteralText.EMPTY);
+	}
+	
+	@Override
+	protected void init() {
+		// Add Clientside Buttons
+		addButton(new ButtonWidget(5, height - 45, 204, 20, new LiteralText("<< Disconnect"), (b) -> {
+			client.openScreen(new NewTitleScreen());
+		}));
+		
+		super.init();
 	}
 	
 	@Override
@@ -23,16 +34,19 @@ public class LobbyScreen extends Screen {
 		DrawableHelper.fill(matrices, 5, 25, width / 3 * 2, height - 50, Color.black.getRGB());
 		
 		// Draw Connected Players from the List
-		int playerlistY = 26;
+		int playerlistY = 15;
 		boolean drawGray = false;
-		if (Client.connectedPlayers.isEmpty()) drawCenteredString(matrices, textRenderer, "Looks like you are alone.. :(", width / 3 / 2, height / 2 + 25, 0xFFFFFF);
-		else {
-			for (String player : Client.connectedPlayers) {
-				drawStringWithShadow(matrices, textRenderer, player, 26, playerlistY += 12, ((drawGray = !drawGray) ? Color.lightGray.getRGB() : 0xFFFFFFFF));
-			}
+		for (String player : Client.connectedPlayers) {
+			drawStringWithShadow(matrices, textRenderer, player, 7, playerlistY += 12, ((drawGray = !drawGray) ? Color.LIGHT_GRAY.getRGB() : 0xFFFFFFFF));
 		}
 		
 		super.render(matrices, mouseX, mouseY, delta);
+	}
+	
+	@Override
+	public void renderBackground(MatrixStack matrices) {
+		
+		super.renderBackground(matrices);
 	}
 	
 }

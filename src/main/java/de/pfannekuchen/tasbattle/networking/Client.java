@@ -8,7 +8,6 @@ import de.pfannekuchen.tasbattle.TASBattleClient;
 import de.pfannekuchen.tasbattleserver.packets.HandshakePacket;
 import de.pfannekuchen.tasbattleserver.packets.LoginPacket;
 import de.pfannekuchen.tasbattleserver.packets.UpdatePlayersPacket;
-import net.minecraft.client.MinecraftClient;
 import work.mgnet.packetlib.handler.ConnectionHandler;
 import work.mgnet.packetlib.uses.Packet;
 import work.mgnet.packetlib.uses.PacketEvent;
@@ -18,6 +17,9 @@ public class Client {
 	private static ConnectionHandler socket;
 	public static HandshakePacket settings;
 	public static ArrayList<String> connectedPlayers = new ArrayList<>();
+	
+	public static boolean isOnline;
+	public static String playername;
 	
 	/* Connects to the Server and sends Magic Bytes */
 	public static void connect() throws Exception {
@@ -35,7 +37,7 @@ public class Client {
 				}
 			}
 		});
-		handler.sendPacket(new LoginPacket(MinecraftClient.getInstance().getName(), false)); // TODO: Change with actual online check.
+		handler.sendPacket(new LoginPacket(playername, isOnline));
 	}
 	
 	/* Closes the Socket again */

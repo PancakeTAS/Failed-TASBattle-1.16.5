@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.mojang.authlib.properties.PropertyMap;
 
+import de.pfannekuchen.tasbattle.networking.Client;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.RunArgs.AutoConnect;
 import net.minecraft.client.RunArgs.Game;
@@ -25,7 +26,7 @@ public class LaunchArgsMixin {
 	/** Replace RunArgs with new ones that don't have any Session and Auto-Connect. */
 	@ModifyArg(method = "main", index = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;<init>(Lnet/minecraft/client/RunArgs;)V"))
 	private static RunArgs modifyRunArgs(RunArgs original) {
-		return new RunArgs(new Network(new Session(original.network.session.getUsername(), original.network.session.getUuid(), "", ""), new PropertyMap(), new PropertyMap(), original.network.netProxy), 
+		return new RunArgs(new Network(new Session(Client.playername = original.network.session.getUsername(), original.network.session.getUuid(), "", ""), new PropertyMap(), new PropertyMap(), original.network.netProxy), 
 				original.windowSettings, 
 				original.directories,
 				new Game(false, "1.16.5-TASBattle", "release", true, false), 

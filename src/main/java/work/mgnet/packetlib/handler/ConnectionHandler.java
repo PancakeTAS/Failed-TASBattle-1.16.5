@@ -34,7 +34,6 @@ public class ConnectionHandler {
 			while(true) {
 				try {
 					Object read = inputstream.readObject();
-					System.out.println(read.getClass().getSimpleName());
 					if (read instanceof Packet) {
 						if ((read instanceof IdPacket) == false) System.out.println(new SimpleDateFormat("[HH:mm:ss]").format(new Date()) + "[CLIENT] " + (Packet) read + " from Server");
 						if (read instanceof IdPacket) {

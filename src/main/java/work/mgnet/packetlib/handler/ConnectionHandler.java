@@ -22,7 +22,7 @@ public class ConnectionHandler {
 	 * @param packet
 	 */
 	
-	private Socket target; /**Socket*/
+	private volatile Socket target; /**Socket*/
 	public int id = -1;
 	private ObjectOutputStream outputstream; /**OutputStream for sending Objects*/
 	private ObjectInputStream inputstream; /**InputStream for Objects*/
@@ -31,7 +31,7 @@ public class ConnectionHandler {
 		
 		@Override
 		public void run() {
-			while(true) {
+			while(target.isConnected()) {
 				try {
 					Object read = inputstream.readObject();
 					if (read instanceof Packet) {
@@ -46,7 +46,7 @@ public class ConnectionHandler {
 						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					return;
 				}
 			}
 		}
@@ -57,6 +57,11 @@ public class ConnectionHandler {
 		this.outputstream = new ObjectOutputStream(target.getOutputStream());
 		this.inputstream = new ObjectInputStream(target.getInputStream());
 		eventDaemon.start();
+	}
+	
+	public void close() throws IOException {
+		eventDaemon.interrupt();
+		target.close();
 	}
 	
 	public void sendPacket(Packet obj) throws Exception { /**Send a Packet*/

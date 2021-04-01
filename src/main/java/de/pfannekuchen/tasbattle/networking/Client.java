@@ -1,10 +1,10 @@
 package de.pfannekuchen.tasbattle.networking;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import de.pfannekuchen.tasbattle.TASBattleClient;
+import de.pfannekuchen.tasbattleserver.packets.GameRunPacket;
 import de.pfannekuchen.tasbattleserver.packets.HandshakePacket;
 import de.pfannekuchen.tasbattleserver.packets.LoginPacket;
 import de.pfannekuchen.tasbattleserver.packets.UpdatePlayersPacket;
@@ -14,16 +14,33 @@ import work.mgnet.packetlib.uses.PacketEvent;
 
 public class Client {
 
-	private static ConnectionHandler socket;
+	private static ConnectionHandler handler;
 	public static HandshakePacket settings;
-	public static ArrayList<String> connectedPlayers = new ArrayList<>();
+	public static UpdatePlayersPacket connectedPlayers = new UpdatePlayersPacket(new ArrayList<>(), 0, 0, 0);
 	
 	public static boolean isOnline;
 	public static String playername;
 	
+	public static boolean shouldFFA;
+	public static int ffaWhen = -1;
+	
 	/* Connects to the Server and sends Magic Bytes */
 	public static void connect() throws Exception {
-		ConnectionHandler handler = new ConnectionHandler(new Socket("127.0.0.1", TASBattleClient.PORT));
+		handler = new ConnectionHandler(new Socket("127.0.0.1", TASBattleClient.PORT));
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while (true) {
+					if (ffaWhen > 0) ffaWhen--;
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 		handler.addEvent(new PacketEvent() {
 			@Override
 			public void onPacket(Packet packet, Socket socket, int id) {
@@ -33,7 +50,10 @@ public class Client {
 					
 				} else if (packet.getName().equalsIgnoreCase("UpdatePlayersPacket")) {
 					System.out.println("[Networking] Updating Playerlist");
-					connectedPlayers = ((UpdatePlayersPacket) packet).players;
+					connectedPlayers = ((UpdatePlayersPacket) packet);
+				} else if (packet.getName().equalsIgnoreCase("GameRunPacket")) {
+					shouldFFA = ((GameRunPacket) packet).startTimer;
+					ffaWhen = ((GameRunPacket) packet).time;
 				}
 			}
 		});
@@ -41,13 +61,13 @@ public class Client {
 	}
 	
 	/* Closes the Socket again */
-	public static void disconnect() throws IOException {
-		socket.getTarget().close();
+	public static void disconnect() throws Exception {
+		handler.close();
 	}
 	
 	/* Serialize a Packet and send it to the Client */
 	public static void sendPacket(Packet p) throws Exception {
-		socket.sendPacket(p);
+		handler.sendPacket(p);
 	}
 	
 }

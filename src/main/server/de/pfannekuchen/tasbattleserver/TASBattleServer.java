@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import de.pfannekuchen.tasbattleserver.packets.ConnectPacket;
 import de.pfannekuchen.tasbattleserver.packets.GameRunPacket;
 import de.pfannekuchen.tasbattleserver.packets.HandshakePacket;
 import de.pfannekuchen.tasbattleserver.packets.JoinQueuePacket;
@@ -34,25 +35,7 @@ public class TASBattleServer {
 	public static boolean isFFARunning = false;
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException, ExecutionException {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(true) {
-					ffaCooldown--;
-					if (ffaCooldown == 0) {
-						// TODO: Start the game.
-						System.out.println("Starting new FFA Game");
-						isFFARunning = true;
-					}
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+
 		
 		Properties settings = new Properties();
 		if (!properties.exists()) properties.createNewFile();
@@ -65,6 +48,53 @@ public class TASBattleServer {
 		gameSettings.skywarsTickrate = Integer.parseInt(settings.getProperty("skywarsTickrate"));
 		gameSettings.ffaTickrate = Integer.parseInt(settings.getProperty("ffaTickrate"));
 		ServerHandler server = new ServerHandler(PacketLib.openServer(25566));
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true) {
+					ffaCooldown--;
+					if (ffaCooldown == 0) {
+						// TODO: Start the game.
+						System.out.println("Starting new FFA Game");
+						isFFARunning = true;
+						
+						queueFFA.forEach((c) -> {
+							try {
+								server.sendPacket(new ConnectPacket(25500), c);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
+						clients.forEach((a, b) -> {
+							try {
+								server.sendPacket(new GameRunPacket(false, -1), a);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
+						
+						ArrayList<String> pList = new ArrayList<String>();
+						clients.forEach((c, b) -> {
+							pList.add(b.username + (b.isOnline ? "" : " [Offline]"));
+						});
+						UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size() + (isFFARunning ? 100 : 0), 0, 0);
+						clients.forEach((c, b) -> {
+							try {
+								server.sendPacket(refreshPlayers, c);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 		server.addEvent(new PacketEvent() {
 			
 			@Override
@@ -75,7 +105,7 @@ public class TASBattleServer {
 					clients.forEach((c, b) -> {
 						pList.add(b.username + (b.isOnline ? "" : " [Offline]"));
 					});
-					UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size(), 0, 0);
+					UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size() + (isFFARunning ? 100 : 0), 0, 0);
 					clients.forEach((c, b) -> {
 						try {
 							server.sendPacket(refreshPlayers, c);
@@ -84,11 +114,9 @@ public class TASBattleServer {
 						}
 					});
 				} else if (packet.getName().equalsIgnoreCase("JoinQueuePacket")) {
-					if (((JoinQueuePacket) packet).queue.equalsIgnoreCase("ffa")) {
-						
-						
+					if (((JoinQueuePacket) packet).queue.equalsIgnoreCase("ffa") && !isFFARunning) {
 						if (queueFFA.contains(socket)) queueFFA.remove(socket);
-						else if (!isFFARunning) queueFFA.add(socket);
+						else queueFFA.add(socket);
 						
 						
 						// Update Clients
@@ -96,7 +124,7 @@ public class TASBattleServer {
 						clients.forEach((c, b) -> {
 							pList.add(b.username + (b.isOnline ? "" : " [Offline]"));
 						});
-						UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size(), 0, 0);
+						UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size() + (isFFARunning ? 100 : 0), 0, 0);
 						clients.forEach((c, b) -> {
 							try {
 								server.sendPacket(refreshPlayers, c);
@@ -158,7 +186,7 @@ public class TASBattleServer {
 				clients.forEach((c, b) -> {
 					pList.add(b.username + (b.isOnline ? "" : " [Offline]"));
 				});
-				UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size(), 0, 0);
+				UpdatePlayersPacket refreshPlayers = new UpdatePlayersPacket(pList, queueFFA.size() + (isFFARunning ? 100 : 0), 0, 0);
 				clients.forEach((c, b) -> {
 					try {
 						server.sendPacket(refreshPlayers, c);

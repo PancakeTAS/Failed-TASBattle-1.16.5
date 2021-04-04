@@ -46,6 +46,7 @@ public class ConnectionHandler {
 						}
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					return;
 				}
 			}

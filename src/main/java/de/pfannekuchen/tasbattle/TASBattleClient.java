@@ -39,6 +39,7 @@ public final class TASBattleClient implements ClientModInitializer {
 	    } catch (MalformedURLException e) {
 	        throw new RuntimeException(e);
 	    } catch (IOException e) {
+	    	e.printStackTrace();
 	        return false;
 	    }
 	}

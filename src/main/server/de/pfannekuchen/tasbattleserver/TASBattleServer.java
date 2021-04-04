@@ -35,8 +35,6 @@ public class TASBattleServer {
 	public static boolean isFFARunning = false;
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException, ExecutionException {
-
-		
 		Properties settings = new Properties();
 		if (!properties.exists()) properties.createNewFile();
 		settings.load(new FileInputStream(properties));
@@ -61,7 +59,7 @@ public class TASBattleServer {
 						
 						queueFFA.forEach((c) -> {
 							try {
-								server.sendPacket(new ConnectPacket(25500), c);
+								server.sendPacket(new ConnectPacket(25500, false), c);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -86,6 +84,21 @@ public class TASBattleServer {
 								e.printStackTrace();
 							}
 						});
+						
+						new Thread(() -> {
+							try {
+								new MCHandler(new File("ffa"), new File("ffa_backup"));
+								queueFFA.forEach((c) -> {
+									try {
+										server.sendPacket(new ConnectPacket(25500, true), c);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								});
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}).start();
 					}
 					try {
 						Thread.sleep(1000);

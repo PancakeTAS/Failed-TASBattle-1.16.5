@@ -4,10 +4,16 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import de.pfannekuchen.tasbattle.TASBattleClient;
+import de.pfannekuchen.tasbattleserver.packets.ConnectPacket;
 import de.pfannekuchen.tasbattleserver.packets.GameRunPacket;
 import de.pfannekuchen.tasbattleserver.packets.HandshakePacket;
 import de.pfannekuchen.tasbattleserver.packets.LoginPacket;
 import de.pfannekuchen.tasbattleserver.packets.UpdatePlayersPacket;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import work.mgnet.packetlib.handler.ConnectionHandler;
 import work.mgnet.packetlib.uses.Packet;
 import work.mgnet.packetlib.uses.PacketEvent;
@@ -54,6 +60,12 @@ public class Client {
 				} else if (packet.getName().equalsIgnoreCase("GameRunPacket")) {
 					shouldFFA = ((GameRunPacket) packet).startTimer;
 					ffaWhen = ((GameRunPacket) packet).time;
+				} else if (packet.getName().equalsIgnoreCase("ConnectPacket")) {
+					if (((ConnectPacket) packet).connect) {
+						MinecraftClient.getInstance().openScreen(new ConnectScreen(new TitleScreen(), MinecraftClient.getInstance(), TASBattleClient.SERVER, ((ConnectPacket) packet).port));
+					} else {
+						MinecraftClient.getInstance().openScreen(new DownloadingTerrainScreen());
+					}
 				}
 			}
 		});

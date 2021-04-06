@@ -13,7 +13,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import work.mgnet.packetlib.handler.ConnectionHandler;
 import work.mgnet.packetlib.uses.Packet;
 import work.mgnet.packetlib.uses.PacketEvent;

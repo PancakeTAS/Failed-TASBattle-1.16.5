@@ -8,7 +8,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.pfannekuchen.tasbattle.TASBattleClient;
-import de.pfannekuchen.tasbattle.networking.Client;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -37,11 +36,6 @@ public class NewTitleScreen extends Screen {
 
 	public NewTitleScreen() {
 		super(LiteralText.EMPTY);
-		try {
-			Client.disconnect();
-		} catch (Exception e) {
-			
-		}
 		this.backgroundRenderer = new RotatingCubeMapRenderer(TitleScreen.PANORAMA_CUBE_MAP);
 	}
 
@@ -63,7 +57,6 @@ public class NewTitleScreen extends Screen {
 		})).active = false; // TODO: Implement Singleplayer Training Maps
 		addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 48 + 24, 200, 20, new TranslatableText("Join TAS Battle Server"), (buttonWidget) -> {
 			try {
-				Client.connect();
 				client.openScreen(new LobbyScreen());
 			} catch (Exception e) {
 				e.printStackTrace();

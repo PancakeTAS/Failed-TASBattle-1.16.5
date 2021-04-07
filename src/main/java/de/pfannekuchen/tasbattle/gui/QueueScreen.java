@@ -54,13 +54,13 @@ public class QueueScreen extends Screen {
 			
 			@Override
 			public void run() {
-				if ((buttons.get(offsetKit + kits.length - 1).x + (distanceM / 5)) < width - 110) return;
+				if ((buttons.get(offsetKit + kits.length - 1).x + (distanceM / 5)) < 420 - 110) return;
 				if (buttons.get(offsetKit).x + (distanceM / 5) > 20) return;
 				for (int i = 0; i < kits.length; i++) {
 					buttons.get(offsetKit + i).x += (distanceM / 5); // Move all buttons
 				}
 				
-				if ((buttons.get(offsetMaps + maps.length - 1).x + (distanceK / 5)) < width - 110) return;
+				if ((buttons.get(offsetMaps + maps.length - 1).x + (distanceK / 5)) < 420 - 110) return;
 				if (buttons.get(offsetMaps).x + (distanceK / 5) > 20) return;
 				for (int i = 0; i < maps.length; i++) {
 					buttons.get(offsetMaps + i).x += (distanceK / 5); // Move all buttons

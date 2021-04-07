@@ -1,10 +1,12 @@
 package de.pfannekuchen.tasbattle.gui;
 
+import java.awt.Color;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.WorldListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -17,6 +19,7 @@ public class QueueScreen extends Screen {
 	public static String queue = "FFA";
 	public static String[] kits = new String[] {"Crystals", "Rainbow", "Oldschool", "Tactical", "Test"};
 	public static String[] maps = new String[] {"2b2t", "The Nile", "Beauty to Ashes", "Rave Map", "Void", "Ship", "Minigolf", "Snowy"};
+	public static String[] players = new String[] {"Chmm3 [Offline]", "Pancake"};
 	public static int selectedKit = 0;
 	public static int selectedMap = 0;
 	
@@ -130,6 +133,15 @@ public class QueueScreen extends Screen {
 		drawStringWithShadow(matrices, client.textRenderer, ">", width - client.textRenderer.getWidth(">") - 1, 67, 0xFFFFFF);
 		drawStringWithShadow(matrices, client.textRenderer, "Select a Kit: ", 1, 18, 0xFFFFFF);
 		drawStringWithShadow(matrices, client.textRenderer, "Select a Map: ", 1, 51, 0xFFFFFF);
+		
+		// Draw Outline of Player List
+		DrawableHelper.fill(matrices, 4, 85, width / 7 * 2 + 1, height - 34, Color.lightGray.getRGB());
+		DrawableHelper.fill(matrices, 5, 86, width / 7 * 2, height - 35, Color.black.getRGB());
+		
+		// Draw Player List
+		for (int i = 0; i < players.length; i++) {
+			drawStringWithShadow(matrices, client.textRenderer, players[i], 6, 87 + (i * 11), 0xFFFFFF);
+		}
 		
 		super.render(matrices, mouseX, mouseY, delta);
 	}
